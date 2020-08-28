@@ -4,7 +4,6 @@
 
 <head>
     <title>Connect4</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="connect4.css">
 
 </head>
@@ -18,7 +17,9 @@
         <input type="text" id="column-input" name="column" value="6" size="3"><br>
         <button onclick="setupBoard()">Create Board</button>
     </div>
-    <div id="game-board" class="container">
+    <div id="game-board-container">
+        <div id="game-board" class="flex-container">
+        </div>
     </div>
     <div id="win-count-area">
         <p id="win-count-label" class="flex-container">Win Count:</p>
