@@ -10,9 +10,31 @@
         text-align: center;
     }
     
+    body {
+        background: #F0F0F0
+    }
+    
     #board-input {
         text-align: center;
         margin-bottom: 5px
+    }
+    
+    #player-display {
+        font-family: "Trebuchet MS";
+        font-size: 20px;
+        margin: auto;
+        justify-content: center;
+        flex-direction: column;
+    }
+    
+    #player-counter {
+        margin-top: 15px;
+    }
+    
+    .column:hover {
+        border: 0.7px solid white;
+        border-radius: 10px;
+        box-shadow: 0 0 10px white;
     }
     
     p {
@@ -33,7 +55,7 @@
         border-color: black;
         border-width: 3px;
         border-style: solid;
-        background-color: white;
+        background-color: #F0F0F0;
         border-radius: 50%;
         height: 80px;
         width: 80px;
@@ -41,10 +63,13 @@
     }
     
     #game-board-container {
-        margin: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     
     #game-board {
+        border-radius: 25px;
         background-color: #6d9eebff;
         border: 3px;
         border-style: solid;
@@ -52,6 +77,10 @@
         margin: 0 auto;
         flex-direction: row;
         display: inline-block;
+    }
+    
+    #win-player-area {
+        justify-content: space-between;
     }
     
     .column {
@@ -70,8 +99,6 @@
     #win-count-area {
         width: 250px;
         height: 150px;
-        margin-top: 75px;
-        margin-left: 50px;
     }
     
     #red-counter {

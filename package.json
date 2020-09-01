@@ -1,0 +1,22 @@
+{
+    "name": "connect4",
+    "version": "1.0.0",
+    "description": "",
+    "main": "board.js",
+    "scripts": {
+        "test": "jest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/athavan9/Connect4.git"
+    },
+    "author": "Athavan & Taylor",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/athavan9/Connect4/issues"
+    },
+    "homepage": "https://github.com/athavan9/Connect4#readme",
+    "dependencies": {
+        "jest": "^26.4.2"
+    }
+}

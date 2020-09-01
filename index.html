@@ -18,18 +18,23 @@
         <button onclick="setupBoard()">Create Board</button>
     </div>
     <div id="game-board-container">
-        <div id="game-board" class="flex-container">
-        </div>
+        <div id="game-board" class="flex-container"></div>
     </div>
-    <div id="win-count-area">
-        <p id="win-count-label" class="flex-container">Win Count:</p>
-        <div id="win-counters" class="flex-container">
-            <div id="red-counter" class="counter">
-                <div class="score-label flex-container">1</div>
+    <div id="win-player-area" class="flex-container">
+        <div id="win-count-area">
+            <p id="win-count-label" class="flex-container">Win Count:</p>
+            <div id="win-counters" class="flex-container">
+                <div id="red-counter" class="counter">
+                    <div class="score-label flex-container">1</div>
+                </div>
+                <div id="yellow-counter" class="counter">
+                    <div class="score-label flex-container">0</div>
+                </div>
             </div>
-            <div id="yellow-counter" class="counter">
-                <div class="score-label flex-container">0</div>
-            </div>
+        </div>
+        <div id="player-display" class="flex-container">
+            <div>Player Turn: </div>
+            <div id="player-counter" class="counter"></div>
         </div>
     </div>
     <script src="./board.js"></script>
