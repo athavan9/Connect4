@@ -12,7 +12,7 @@
     <h1>Connect 4</h1>
     <div id="board-input">
         <label for="row">Rows:</label>
-        <input type="text" id="row-input" name="row" value="4" size="3">
+        <input type="text" id="row-input" name="row" value="5" size="3">
         <label id="column-label" for="column"> Columns:</label>
         <input type="text" id="column-input" name="column" value="6" size="3"><br>
         <button onclick="setupBoard()">Create Board</button>
@@ -20,7 +20,7 @@
     <div id="game-board-container">
         <div id="game-board" class="flex-container"></div>
     </div>
-    <div id="win-player-area" class="flex-container">
+    <div id="indicator-area" class="flex-container">
         <div id="win-count-area">
             <p id="win-count-label" class="flex-container">Win Count:</p>
             <div id="win-counters" class="flex-container">
@@ -32,8 +32,8 @@
                 </div>
             </div>
         </div>
-        <div id="player-display" class="flex-container">
-            <div>Player Turn: </div>
+        <div id="player-turn-area" style="display: none" class="flex-container">
+            <p>Player Turn: </p>
             <div id="player-counter" class="counter"></div>
         </div>
     </div>

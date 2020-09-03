@@ -19,18 +19,6 @@
         margin-bottom: 5px
     }
     
-    #player-display {
-        font-family: "Trebuchet MS";
-        font-size: 20px;
-        margin: auto;
-        justify-content: center;
-        flex-direction: column;
-    }
-    
-    #player-counter {
-        margin-top: 15px;
-    }
-    
     .column:hover {
         border: 0.7px solid white;
         border-radius: 10px;
@@ -78,16 +66,53 @@
         flex-direction: row;
         display: inline-block;
     }
+
+    /*-- Bottom Area --*/
     
-    #win-player-area {
+    #indicator-area {
         justify-content: space-between;
     }
+
+    #win-count-area {
+        
+    }
+
+    #win-count-label {
+        justify-content: center;
+    }
+
+    #win-counters {
+        flex-direction: row;
+        justify-content: center;
+        
+    }
+
+    #red-counter {
+        background-color: red
+    }
     
+    #yellow-counter {
+        background-color: yellow;
+    }
+
+    #player-counter {
+        margin-top: 15px;
+    }
+
+    /*-- Bottom Area --*/
+
     .column {
         flex-direction: column;
         float: left;
     }
     
+    #player-turn-area {
+        font-family: "Trebuchet MS";
+        font-size: 20px;
+        margin: auto;
+        justify-content: center;
+    }
+
     .counter {
         height: 100px;
         width: 100px;
@@ -96,32 +121,11 @@
         border-style: solid;
     }
     
-    #win-count-area {
-        width: 250px;
-        height: 150px;
-    }
-    
-    #red-counter {
-        background-color: red
-    }
-    
-    #yellow-counter {
-        background-color: yellow;
-    }
-    
     .flex-container {
         display: flex;
     }
     
-    #win-counters {
-        flex-direction: row;
-        justify-content: center;
-        justify-content: space-around;
-    }
-    
-    #win-count-label {
-        justify-content: center;
-    }
+
     
     .score-label {
         justify-content: center;
