@@ -73,18 +73,13 @@ function setupBoard() {
 }
 
 function checkColumnWin(columnIndex) {
-  let lossDetected = true;
   let fourInARowCount = 0;
   for (let i = gameBoardValues[columnIndex].length - 1; i >= 0; i -= 1) {
-    console.log(i + ". CheckPiece: " + gameBoardValues[columnIndex][i]);
     if ((i + 1) >= 4 && gameBoardValues[columnIndex][i] !== null) {
       fourInARowCount = 0;
       for (let j = 1; j < 4; j += 1) {
         const nextRowUpPiece = gameBoardValues[columnIndex][i - j];
-        console.log("gameBoardValues [" + columnIndex + "][" + (i - j) + "] - " + nextRowUpPiece);
         if (gameBoardValues[columnIndex][i] !== nextRowUpPiece || nextRowUpPiece === null) {
-          console.log("Loss Detected");
-          lossDetected = true;
           break;
         } else if (gameBoardValues[columnIndex][i] === nextRowUpPiece) {
           fourInARowCount += 1;
@@ -93,29 +88,46 @@ function checkColumnWin(columnIndex) {
     } else {
       break;
     }
-    if (fourInARowCount === 3) {
-      console.log("Win");
+    if (fourInARowCount >= 3) {
+      showWinner(gameBoardValues[columnIndex][i]);
       break;
     }
   }
 }
 
 function checkRowWin(rowIndex) {
-  let winDetected = true;
-  for (let i = 0; i < gameBoardValues.length; i += 1) {
+  // let lossDetected = true;
+  let fourInARowCount = 0;
+  for (let i = 0; i < gameBoardValues.length - 1; i += 1) {
+    // console.log(i + '. CheckPiece(Row): ' + gameBoardValues[i][rowIndex]);
     if (gameBoardValues.length - i >= 4) {
+      fourInARowCount = 0;
       for (let j = 1; j < 4; j += 1) {
-        if (gameBoardValues[i][rowIndex] !== gameBoardValues[i + j][rowIndex]) {
-          winDetected = false;
+        const nextColumnPiece = gameBoardValues[i + j][rowIndex];
+        // console.log('gameBoardValues [' + (i + j) + '][' + rowIndex + '] - ' + nextColumnPiece);
+        if (gameBoardValues[i][rowIndex] !== nextColumnPiece || nextColumnPiece === null) {
+          // console.log('Loss Detected');
+          // lossDetected = true;
           break;
+        } else if (gameBoardValues[i][rowIndex] === nextColumnPiece) {
+          fourInARowCount += 1;
         }
       }
+    } else {
+      break;
     }
-    if (winDetected === true) {
-      console.log("Win");
+    if (fourInARowCount >= 3) {
+      showWinner(gameBoardValues[i][rowIndex]);
       break;
     }
   }
+}
+
+function showWinner(winningColor) {
+  $('.fireworks').attr('style', 'display: block;');
+  $('.winner-text').text(`${winningColor.toUpperCase()} TEAM WINS!`);
+  $('.winner-text').css('color', winningColor);
+  console.log('Winner');
 }
 
 // eslint-disable-next-line no-unused-vars

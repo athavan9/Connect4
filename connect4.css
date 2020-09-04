@@ -11,7 +11,7 @@
     }
     
     body {
-        background: #F0F0F0
+        background: lightgray;
     }
     
     #board-input {
@@ -54,6 +54,14 @@
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+
+    .winner-text {
+        justify-content: center;
+    }
+
+    .fireworks {
+        margin: auto;
     }
     
     #game-board {
