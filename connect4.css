@@ -13,13 +13,22 @@
     body {
         background: lightgray;
     }
+
+    #reset-button {
+        margin: auto;
+    }
     
     #board-input {
         text-align: center;
         margin-bottom: 5px
     }
     
-    .column:hover {
+    .column {
+        flex-direction: column;
+        float: left;
+    }
+
+    .column-hover:hover {
         border: 0.7px solid white;
         border-radius: 10px;
         box-shadow: 0 0 10px white;
@@ -108,11 +117,6 @@
     }
 
     /*-- Bottom Area --*/
-
-    .column {
-        flex-direction: column;
-        float: left;
-    }
     
     #player-turn-area {
         font-family: "Trebuchet MS";

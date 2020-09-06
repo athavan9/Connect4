@@ -1,5 +1,7 @@
 let gameBoardValues = [];
 let currentPlayer = 'red';
+let gameBoardColumns;
+let gameBoardRows;
 
 function resetBoard(row, column) {
   $('#game-board').html('');
@@ -10,6 +12,10 @@ function resetBoard(row, column) {
   }
   $('#player-counter').css('background-color', 'red');
   currentPlayer = 'red';
+}
+
+function resetGame() {
+
 }
 
 function setupGameBoardValues(row, column) {
@@ -24,57 +30,16 @@ function setupGameBoardValues(row, column) {
   gameBoardValues = customGameBoardValues;
 }
 
-function placeCounter(columnIndex) {
-  for (let i = gameBoardValues[columnIndex].length - 1; i >= 0; i -= 1) {
-    if (gameBoardValues[columnIndex][i] == null) {
-      gameBoardValues[columnIndex][i] = currentPlayer;
-      const counterPos = `${columnIndex}-${i}`;
-      $(`#${counterPos}`).css('background-color', currentPlayer);
-
-      checkWinner(columnIndex, i);
-      break;
-    }
-  }
-  if (currentPlayer === 'yellow') {
-    currentPlayer = 'red';
-    $('#player-counter').css('background-color', 'red');
-  } else {
-    currentPlayer = 'yellow';
-    $('#player-counter').css('background-color', 'yellow');
-  }
-  console.log(gameBoardValues);
-}
-
-// eslint-disable-next-line no-unused-vars
-function setupBoard() {
-  resetBoard();
-  const row = $('#row-input').val();
-  const column = $('#column-input').val();
-  setupGameBoardValues(row, column);
-
-  for (let i = 0; i < column; i += 1) {
-    const divColumn = $('<div></div>');
-    divColumn.click(() => {
-      placeCounter(i);
-    });
-    divColumn.attr('class', 'column flex-container');
-    divColumn.attr('id', i);
-
-    for (let j = 0; j < row; j += 1) {
-      const divRow = $('<div></div>');
-      divRow.attr('class', 'row');
-      divRow.attr('id', `${i}-${j}`);
-      divColumn.append(divRow);
-    }
-
-    $('#game-board').append(divColumn);
-    $('#player-turn-area').attr('style', 'display: block');
-  }
+function showWinner(winningColor) {
+  $('.fireworks').attr('style', 'display: block;');
+  $('.winner-text').text(`${winningColor.toUpperCase()} TEAM WINS!`);
+  $('.winner-text').css('color', winningColor);
+  // removeHover();
 }
 
 function checkColumnWin(columnIndex) {
   let fourInARowCount = 0;
-  for (let i = gameBoardValues[columnIndex].length - 1; i >= 0; i -= 1) {
+  for (let i = gameBoardValues[columnIndex].length - 1; i >= 0; i -= 1) { // Loops through each row
     if ((i + 1) >= 4 && gameBoardValues[columnIndex][i] !== null) {
       fourInARowCount = 0;
       for (let j = 1; j < 4; j += 1) {
@@ -123,25 +88,75 @@ function checkRowWin(rowIndex) {
   }
 }
 
-function showWinner(winningColor) {
-  $('.fireworks').attr('style', 'display: block;');
-  $('.winner-text').text(`${winningColor.toUpperCase()} TEAM WINS!`);
-  $('.winner-text').css('color', winningColor);
-  console.log('Winner');
-}
-
-// eslint-disable-next-line no-unused-vars
 function checkWinner(columnIndex, rowIndex) {
   checkColumnWin(columnIndex);
   checkRowWin(rowIndex);
 }
 
+function placeCounter(columnIndex) {
+  for (let i = gameBoardValues[columnIndex].length - 1; i >= 0; i -= 1) {
+    if (gameBoardValues[columnIndex][i] == null) {
+      gameBoardValues[columnIndex][i] = currentPlayer;
+      const counterPos = `${columnIndex}-${i}`;
+      $(`#${counterPos}`).css('background-color', currentPlayer);
+
+      checkWinner(columnIndex, i);
+      break;
+    }
+  }
+  if (currentPlayer === 'yellow') {
+    currentPlayer = 'red';
+    $('#player-counter').css('background-color', 'red');
+  } else {
+    currentPlayer = 'yellow';
+    $('#player-counter').css('background-color', 'yellow');
+  }
+  // console.log(gameBoardValues);
+}
+
+// eslint-disable-next-line no-unused-vars
+function setupBoard() {
+  resetBoard();
+  const row = $('#row-input').val();
+  const column = $('#column-input').val();
+  gameBoardColumns = column;
+  gameBoardRows = row;
+  setupGameBoardValues(row, column);
+
+  for (let i = 0; i < column; i += 1) {
+    const divColumn = $('<div></div>');
+    divColumn.click(() => {
+      placeCounter(i);
+    });
+    divColumn.attr('class', 'column column-hover flex-container');
+    divColumn.attr('id', i);
+
+    for (let j = 0; j < row; j += 1) {
+      const divRow = $('<div></div>');
+      divRow.attr('class', 'row');
+      divRow.attr('id', `${i}-${j}`);
+      divColumn.append(divRow);
+    }
+
+    $('#game-board').append(divColumn);
+    // $('#indicator-area').attr('style', 'display: block');
+    $('#player-turn-area').attr('style', 'display: block');
+    $('#reset-button').attr('style', 'display: block');
+  }
+}
+
+function removeHover() {
+  for (let i = 0; i < gameBoardColumns; i += 1) {
+    $(`#${i}`).removeClass('.column-hover');
+  }
+}
+
 // module = module || {};
-/* module.exports = {
-    resetBoard: resetBoard,
-    setupGameBoardValues: setupGameBoardValues,
-    placeCounter: placeCounter,
-    setupBoard: setupBoard,
-    getGameBoardValues: getGameBoardValues,
-    setGameBoardValues: setGameBoardValues,
-} */
+if (typeof module !== 'undefined') {
+  module.exports = {
+    resetBoard,
+    setupGameBoardValues,
+    placeCounter,
+    setupBoard,
+  };
+}
