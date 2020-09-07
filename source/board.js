@@ -88,15 +88,68 @@ function checkRowWin(rowIndex) {
   }
 }
 
+function checkDiagonalPositiveWin(columnIndex, rowIndex) {
+  let fourInARowCount = 0;
+  const columnLength = gameBoardValues.length;
+
+  let columnPos = columnIndex;
+  let rowPos = rowIndex;
+
+  while (columnPos <= columnLength - 4) {
+    fourInARowCount = 0;
+    for (let i = 1; i < 4; i += 1) {
+      console.log("GameBaord [" + (columnPos) + "][" + (rowPos) + "]");
+      console.log("Next GameBaord [" + (columnPos + i) + "][" + (rowPos - i) + "]");
+      if (gameBoardValues[columnPos + i][rowPos - i] !== null) {
+        if (gameBoardValues[columnPos][rowPos] === gameBoardValues[columnPos + i][rowPos - i]) {
+          console.log(gameBoardValues[columnPos + i][rowPos - i]);
+          fourInARowCount += 1;
+        } else {
+          break;
+        }
+      } else {
+        break;
+      }
+    }
+    if (fourInARowCount >= 3) {
+      showWinner(gameBoardValues[columnPos][rowPos]);
+      break;
+    }
+    columnPos += 1;
+    rowPos -= 1;
+  }
+}
+
+function getLeftDiagnoalPoint(columnIndex, rowIndex) {
+  let columnPos = columnIndex;
+  let rowPos = rowIndex;
+  let lowestLeftDiagonal;
+
+  let foundEnd = false;
+  while (foundEnd === false) {
+    if (columnPos - 1 < 0 || rowPos + 1 > gameBoardValues[0].length - 1) {
+      lowestLeftDiagonal = [columnPos, rowPos];
+      foundEnd = true;
+    }
+    columnPos -= 1;
+    rowPos += 1;
+  }
+  return lowestLeftDiagonal;
+}
+
 function checkWinner(columnIndex, rowIndex) {
   checkColumnWin(columnIndex);
   checkRowWin(rowIndex);
+  const lowestLeftDiagonalPoint = getLeftDiagnoalPoint(columnIndex, rowIndex);
+  console.log("Lowest Left Diag: " + lowestLeftDiagonalPoint);
+  checkDiagonalPositiveWin(lowestLeftDiagonalPoint[0], lowestLeftDiagonalPoint[1]);
 }
 
 function placeCounter(columnIndex) {
   for (let i = gameBoardValues[columnIndex].length - 1; i >= 0; i -= 1) {
     if (gameBoardValues[columnIndex][i] == null) {
       gameBoardValues[columnIndex][i] = currentPlayer;
+      // console.log("GameBaord [" + columnIndex + "][" + i + "]");
       const counterPos = `${columnIndex}-${i}`;
       $(`#${counterPos}`).css('background-color', currentPlayer);
 
@@ -111,7 +164,7 @@ function placeCounter(columnIndex) {
     currentPlayer = 'yellow';
     $('#player-counter').css('background-color', 'yellow');
   }
-  // console.log(gameBoardValues);
+  console.log(gameBoardValues);
 }
 
 // eslint-disable-next-line no-unused-vars
