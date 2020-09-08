@@ -7,7 +7,7 @@ function resetBoard(row, column) {
   $('#game-board').html('');
   for (let i = 0; i < row; i += 1) {
     for (let j = 0; j < column; j += 1) {
-      gameBoardValues[row][column] = null;
+      gameBoardValues[i][j] = null;
     }
   }
   $('#player-counter').css('background-color', 'red');
@@ -15,7 +15,8 @@ function resetBoard(row, column) {
 }
 
 function resetGame() {
-
+  $('.fireworks').attr('style', 'display: none;');
+  setupBoard();
 }
 
 function setupGameBoardValues(row, column) {
@@ -94,15 +95,12 @@ function checkDiagonalPositiveWin(columnIndex, rowIndex) {
 
   let columnPos = columnIndex;
   let rowPos = rowIndex;
-
-  while (columnPos <= columnLength - 4) {
+  while (columnPos <= columnLength - 4 && rowPos >= 3) {
     fourInARowCount = 0;
     for (let i = 1; i < 4; i += 1) {
-      console.log("GameBaord [" + (columnPos) + "][" + (rowPos) + "]");
-      console.log("Next GameBaord [" + (columnPos + i) + "][" + (rowPos - i) + "]");
       if (gameBoardValues[columnPos + i][rowPos - i] !== null) {
         if (gameBoardValues[columnPos][rowPos] === gameBoardValues[columnPos + i][rowPos - i]) {
-          console.log(gameBoardValues[columnPos + i][rowPos - i]);
+          // console.log(gameBoardValues[columnPos + i][rowPos - i]);
           fourInARowCount += 1;
         } else {
           break;
@@ -137,12 +135,61 @@ function getLeftDiagnoalPoint(columnIndex, rowIndex) {
   return lowestLeftDiagonal;
 }
 
+function checkDiagonalNegativeWin(columnIndex, rowIndex) {
+  let fourInARowCount = 0;
+
+  let columnPos = columnIndex;
+  let rowPos = rowIndex;
+  while (columnPos >= 3 && rowPos >= 3) {
+    fourInARowCount = 0;
+    for (let i = 1; i < 4; i += 1) {
+      // console.log("GameBaord [" + (columnPos) + "][" + (rowPos) + "]");
+      // console.log("Next GameBaord [" + (columnPos - i) + "][" + (rowPos - i) + "]");
+      if (gameBoardValues[columnPos - i][rowPos - i] !== null) {
+        if (gameBoardValues[columnPos][rowPos] === gameBoardValues[columnPos - i][rowPos - i]) {
+          // console.log(gameBoardValues[columnPos - i][rowPos - i]);
+          fourInARowCount += 1;
+        } else {
+          break;
+        }
+      } else {
+        break;
+      }
+    }
+    if (fourInARowCount >= 3) {
+      showWinner(gameBoardValues[columnPos][rowPos]);
+      break;
+    }
+    columnPos -= 1;
+    rowPos -= 1;
+  }
+}
+
+function getRightDiagnoalPoint(columnIndex, rowIndex) {
+  let columnPos = columnIndex;
+  let rowPos = rowIndex;
+  let lowestRightDiagonal;
+
+  let foundEnd = false;
+  while (foundEnd === false) {
+    if (columnPos + 1 > gameBoardValues.length - 1 || rowPos + 1 > gameBoardValues[0].length - 1) {
+      lowestRightDiagonal = [columnPos, rowPos];
+      foundEnd = true;
+    }
+    columnPos += 1;
+    rowPos += 1;
+  }
+  return lowestRightDiagonal;
+}
+
 function checkWinner(columnIndex, rowIndex) {
   checkColumnWin(columnIndex);
   checkRowWin(rowIndex);
   const lowestLeftDiagonalPoint = getLeftDiagnoalPoint(columnIndex, rowIndex);
-  console.log("Lowest Left Diag: " + lowestLeftDiagonalPoint);
+  const lowestRightDiagonalPoint = getRightDiagnoalPoint(columnIndex, rowIndex);
   checkDiagonalPositiveWin(lowestLeftDiagonalPoint[0], lowestLeftDiagonalPoint[1]);
+  // console.log("Lowest Right Diag: " + lowestRightDiagonalPoint);
+  checkDiagonalNegativeWin(lowestRightDiagonalPoint[0], lowestRightDiagonalPoint[1]);
 }
 
 function placeCounter(columnIndex) {
