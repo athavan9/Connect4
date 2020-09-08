@@ -35,6 +35,8 @@ function showWinner(winningColor) {
   $('.fireworks').attr('style', 'display: block;');
   $('.winner-text').text(`${winningColor.toUpperCase()} TEAM WINS!`);
   $('.winner-text').css('color', winningColor);
+  const winCount = $(`#${winningColor}-win-count`).text();
+  $(`#${winningColor}-win-count`).text(parseInt(winCount) + 1);
   // removeHover();
 }
 
