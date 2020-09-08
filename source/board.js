@@ -37,6 +37,7 @@ function showWinner(winningColor) {
   $('.winner-text').css('color', winningColor);
   const winCount = $(`#${winningColor}-win-count`).text();
   $(`#${winningColor}-win-count`).text(parseInt(winCount) + 1);
+  disableBoard();
   // removeHover();
 }
 
@@ -213,7 +214,7 @@ function placeCounter(columnIndex) {
     currentPlayer = 'yellow';
     $('#player-counter').css('background-color', 'yellow');
   }
-  console.log(gameBoardValues);
+  // console.log(gameBoardValues);
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -253,12 +254,18 @@ function removeHover() {
   }
 }
 
-// module = module || {};
-if (typeof module !== 'undefined') {
-  module.exports = {
-    resetBoard,
-    setupGameBoardValues,
-    placeCounter,
-    setupBoard,
-  };
+function disableBoard() {
+  for (let i = 0; i < gameBoardColumns; i += 1) {
+    $('#' + i).off('click');
+  }
 }
+
+// module = module || {};
+// if (typeof module !== 'undefined') {
+//   module.exports = {
+//     resetBoard,
+//     setupGameBoardValues,
+//     placeCounter,
+//     setupBoard,
+//   };
+// }
