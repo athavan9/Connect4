@@ -38,7 +38,7 @@ function showWinner(winningColor) {
   const winCount = $(`#${winningColor}-win-count`).text();
   $(`#${winningColor}-win-count`).text(parseInt(winCount) + 1);
   disableBoard();
-  // removeHover();
+  removeHover();
 }
 
 function checkColumnWin(columnIndex) {
@@ -250,13 +250,13 @@ function setupBoard() {
 
 function removeHover() {
   for (let i = 0; i < gameBoardColumns; i += 1) {
-    $(`#${i}`).removeClass('.column-hover');
+    $(`#${i}`).removeClass('column-hover');
   }
 }
 
 function disableBoard() {
   for (let i = 0; i < gameBoardColumns; i += 1) {
-    $('#' + i).off('click');
+    $(`#${i}`).off('click');
   }
 }
 
