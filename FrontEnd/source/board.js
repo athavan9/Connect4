@@ -1,7 +1,9 @@
-let gameBoardValues = [];
-let currentPlayer = 'red';
-let gameBoardColumns;
-let gameBoardRows;
+const state = {
+  gameBoardValues: [],
+  currentPlayer: 'red',
+  gameBoardColumns: 0,
+  gameBoardRows: 0,
+};
 
 function resetBoardArray(row, column, gameBoardArray) { // PURE FUNCTION
   const customGameBoardValues = gameBoardArray.slice;
@@ -15,9 +17,9 @@ function resetBoardArray(row, column, gameBoardArray) { // PURE FUNCTION
 
 function resetBoard(row, column) {
   $('#game-board').html('');
-  gameBoardValues = resetBoardArray(row, column, gameBoardValues);
+  state.gameBoardValues = resetBoardArray(row, column, state.gameBoardValues);
   $('#player-counter').css('background-color', 'red');
-  currentPlayer = 'red';
+  state.currentPlayer = 'red';
 }
 
 function resetGame() {
@@ -38,13 +40,13 @@ function setupGameBoardValuesArray(row, column) { // PURE FUNCTION
 }
 
 function removeHover() {
-  for (let i = 0; i < gameBoardColumns; i += 1) {
+  for (let i = 0; i < state.gameBoardColumns; i += 1) {
     $(`#${i}`).removeClass('column-hover');
   }
 }
 
 function disableBoard() {
-  for (let i = 0; i < gameBoardColumns; i += 1) {
+  for (let i = 0; i < state.gameBoardColumns; i += 1) {
     $(`#${i}`).off('click');
   }
 }
@@ -195,17 +197,17 @@ function getRightDiagnoalPoint(columnIndex, rowIndex, gameBoardArray) { // PURE 
 }
 
 function checkWinner(columnIndex, rowIndex) {
-  const lowestLeftDiagPoint = getLeftDiagnoalPoint(columnIndex, rowIndex, gameBoardValues);
-  const lowestRightDiagPoint = getRightDiagnoalPoint(columnIndex, rowIndex, gameBoardValues);
+  const lowestLeftDiagPoint = getLeftDiagnoalPoint(columnIndex, rowIndex, state.gameBoardValues);
+  const lowestRightDiagPoint = getRightDiagnoalPoint(columnIndex, rowIndex, state.gameBoardValues);
 
-  if (checkColumnWin(columnIndex, gameBoardValues) != null) {
-    showWinner(checkColumnWin(columnIndex, gameBoardValues));
-  } else if (checkRowWin(rowIndex, gameBoardValues) != null) {
-    showWinner(checkRowWin(rowIndex, gameBoardValues));
-  } else if (checkRightDiagonalWin(lowestLeftDiagPoint, gameBoardValues) != null) {
-    showWinner(checkRightDiagonalWin(lowestLeftDiagPoint, gameBoardValues));
-  } else if (checkLeftDiagonalWin(lowestRightDiagPoint, gameBoardValues) != null) {
-    showWinner(checkLeftDiagonalWin(lowestRightDiagPoint, gameBoardValues));
+  if (checkColumnWin(columnIndex, state.gameBoardValues) != null) {
+    showWinner(checkColumnWin(columnIndex, state.gameBoardValues));
+  } else if (checkRowWin(rowIndex, state.gameBoardValues) != null) {
+    showWinner(checkRowWin(rowIndex, state.gameBoardValues));
+  } else if (checkRightDiagonalWin(lowestLeftDiagPoint, state.gameBoardValues) != null) {
+    showWinner(checkRightDiagonalWin(lowestLeftDiagPoint, state.gameBoardValues));
+  } else if (checkLeftDiagonalWin(lowestRightDiagPoint, state.gameBoardValues) != null) {
+    showWinner(checkLeftDiagonalWin(lowestRightDiagPoint, state.gameBoardValues));
   }
 }
 
@@ -217,18 +219,18 @@ function changePlayer(currentPlayerColour) { // PURE FUNCTION
 }
 
 function placeCounter(columnIndex) {
-  for (let i = gameBoardValues[columnIndex].length - 1; i >= 0; i -= 1) {
-    if (gameBoardValues[columnIndex][i] == null) {
-      gameBoardValues[columnIndex][i] = currentPlayer;
+  for (let i = state.gameBoardValues[columnIndex].length - 1; i >= 0; i -= 1) {
+    if (state.gameBoardValues[columnIndex][i] == null) {
+      state.gameBoardValues[columnIndex][i] = state.currentPlayer;
       const counterPos = `${columnIndex}-${i}`;
-      $(`#${counterPos}`).css('background-color', currentPlayer);
+      $(`#${counterPos}`).css('background-color', state.currentPlayer);
 
       checkWinner(columnIndex, i);
       break;
     }
   }
-  currentPlayer = changePlayer(currentPlayer);
-  $('#player-counter').css('background-color', currentPlayer);
+  state.currentPlayer = changePlayer(state.currentPlayer);
+  $('#player-counter').css('background-color', state.currentPlayer);
 }
 
 function drawBoardToHtml(columnSize, rowSize) {
@@ -265,16 +267,16 @@ function testSetupBoard() {
 
 // eslint-disable-next-line no-unused-vars
 function setupBoard() {
-  $.get('http://localhost:8080/hello', () => {
+  $.get('http://localhost:8080/setup', () => {
 
   });
   resetBoard();
   const row = $('#row-input').val();
   const column = $('#column-input').val();
-  gameBoardColumns = column;
-  gameBoardRows = row;
-  gameBoardValues = setupGameBoardValuesArray(row, column);
-  drawBoardToHtml(gameBoardColumns, gameBoardRows);
+  state.gameBoardColumns = column;
+  state.gameBoardRows = row;
+  state.gameBoardValues = setupGameBoardValuesArray(row, column);
+  drawBoardToHtml(state.gameBoardColumns, state.gameBoardRows);
 
   displayInGameAssets();
 }
