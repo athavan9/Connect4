@@ -5,6 +5,13 @@ const state = {
   gameBoardRows: 0,
 };
 
+function updateStateValues(newStateValues) {
+  state.gameBoardValues = newStateValues.gameBoardValues;
+  state.currentPlayer = newStateValues.currentPlayer;
+  state.gameBoardColumns = newStateValues.gameBoardColumns;
+  state.gameBoardRows = newStateValues.gameBoardRows;
+}
+
 function resetBoardArray(row, column, gameBoardArray) { // PURE FUNCTION
   const customGameBoardValues = gameBoardArray.slice;
   for (let i = 0; i < row; i += 1) {
@@ -267,18 +274,26 @@ function testSetupBoard() {
 
 // eslint-disable-next-line no-unused-vars
 function setupBoard() {
-  $.get('http://localhost:8080/setup', () => {
-
-  });
   resetBoard();
   const row = $('#row-input').val();
   const column = $('#column-input').val();
   state.gameBoardColumns = column;
   state.gameBoardRows = row;
-  state.gameBoardValues = setupGameBoardValuesArray(row, column);
-  drawBoardToHtml(state.gameBoardColumns, state.gameBoardRows);
 
+  // state.gameBoardValues = setupGameBoardValuesArray(row, column);
+  drawBoardToHtml(state.gameBoardColumns, state.gameBoardRows);
   displayInGameAssets();
+
+  $.ajax({
+    type: 'POST',
+    url: '/setup',
+    data: JSON.stringify(state),
+    contentType: 'application/json',
+    success: (result) => {
+      const resultObject = result.result;
+      updateStateValues(resultObject);
+    },
+  });
 }
 
 // module = module || {};

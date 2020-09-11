@@ -2,19 +2,56 @@ const express = require('express');
 
 const app = express();
 
-const cors = require('cors');
+const state = {
+  gameBoardValues: [],
+  currentPlayer: 'red',
+  gameBoardColumns: 0,
+  gameBoardRows: 0,
+};
 
-app.use(express.static('./BackEnd/source'));
-app.use(cors());
+function setupGameBoardValuesArray(row, column) { // PURE FUNCTION
+  const customGameBoardValues = [];
+  for (let i = 0; i < column; i += 1) {
+    const tempArray = [];
+    for (let j = 0; j < row; j += 1) {
+      tempArray.push(null);
+    }
+    customGameBoardValues.push(tempArray);
+  }
+  return customGameBoardValues;
+}
+
+function updateStateValues(newStateValues) {
+  state.gameBoardValues = newStateValues.gameBoardValues;
+  state.currentPlayer = newStateValues.currentPlayer;
+  state.gameBoardColumns = newStateValues.gameBoardColumns;
+  state.gameBoardRows = newStateValues.gameBoardRows;
+}
+// const cors = require('cors');
+
+app.use(express.static('./FrontEnd/source'));
+// app.use(cors());
 app.use(express.json());
 
-// app.post('/setup', (req, res) => {
-//   res.json({
-//     result: req.body.n1 + req.body.n2,
-//   });
-// });
+app.post('/setup', (req, res) => {
+  // eslint-disable-next-line max-len
+  updateStateValues(req.body);
+  state.gameBoardValues = setupGameBoardValuesArray(state.gameBoardRows, state.gameBoardColumns);
+  res.json({
+    result: state,
+  });
+});
 
-// app.get('/setup', (req, res) => 
+app.post('/placeCounter', (req, res) => {
+  // eslint-disable-next-line max-len
+  updateStateValues(req.body);
+  state.gameBoardValues = setupGameBoardValuesArray(state.gameBoardRows, state.gameBoardColumns);
+  res.json({
+    result: state,
+  });
+});
+
+// app.get('/setup', (req, res) => {
 //   console.log('Setting up board...');
 //   res.send('hi');
 // });
