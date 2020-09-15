@@ -35,11 +35,6 @@ function resetBoard(row, column) {
   });
 }
 
-function resetGame() {
-  $('.fireworks').attr('style', 'display: none;');
-  setupBoard();
-}
-
 function removeHover() {
   for (let i = 0; i < state.gameBoardColumns; i += 1) {
     $(`#${i}`).removeClass('column-hover');
@@ -131,9 +126,9 @@ function displayInGameAssets() {
   $('#win-count-area').attr('style', 'display: block');
   $('#player-turn-area').attr('style', 'display: block');
   $('#reset-button').attr('style', 'display: block');
+  $('.fireworks').attr('style', 'display: none;');
 }
 
-// eslint-disable-next-line no-unused-vars
 function setupBoard() {
   resetBoard(state.gameBoardRows, state.gameBoardColumns);
   const row = $('#row-input').val();
@@ -142,7 +137,6 @@ function setupBoard() {
   state.gameBoardRows = row;
   state.currentPlayer = 'red';
 
-  // state.gameBoardValues = setupGameBoardValuesArray(row, column);
   drawBoardToHtml(state.gameBoardColumns, state.gameBoardRows);
   displayInGameAssets();
 
@@ -157,6 +151,14 @@ function setupBoard() {
     },
   });
 }
+
+$('#create-board-button').click(() => {
+  setupBoard();
+});
+
+$('#reset-button').click(() => {
+  setupBoard();
+});
 // module = module || {};
 // if (typeof module !== 'undefined') {
 //   module.exports = {

@@ -15,7 +15,7 @@
         <input type="text" id="row-input" name="row" value="5" size="3">
         <label id="column-label" for="column"> Columns:</label>
         <input type="text" id="column-input" name="column" value="6" size="3"><br>
-        <button onclick="setupBoard()">Create Board</button>
+        <button id="create-board-button">Create Board</button>
     </div>
     <div id="game-board-container">
         <div class="fireworks flex-container" style="display: none;">
@@ -29,7 +29,7 @@
         </div>
     </div>
     <div class="flex-container" style="margin-top: 10px;">
-        <button id="reset-button" onclick="resetGame()" style="display: none;">Reset Game</button>
+        <button id="reset-button" style="display: none;">Reset Game</button>
     </div>
     <div id="indicator-area" class="flex-container">
         <div id="win-count-area" style="display: none;">

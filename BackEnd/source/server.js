@@ -237,6 +237,7 @@ app.post('/checkWin', (req, res) => {
 
 app.post('/resetBoard', (req, res) => {
   updateStateValues(req.body);
+  state.gameBoardValues = resetBoardArray(state.gameBoardArray, state.gameBoardColumns, state.gameBoardValues);
   res.json({
     updatedState: state,
   });
