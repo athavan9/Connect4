@@ -21,6 +21,16 @@ function setupGameBoardValuesArray(row, column) { // PURE FUNCTION
   return customGameBoardValues;
 }
 
+function resetBoardArray(row, column, gameBoardArray) { // PURE FUNCTION
+  const customGameBoardValues = gameBoardArray.slice;
+  for (let i = 0; i < row; i += 1) {
+    for (let j = 0; j < column; j += 1) {
+      customGameBoardValues[i][j] = null;
+    }
+  }
+  return customGameBoardValues;
+}
+
 function updateStateValues(newStateValues) {
   state.gameBoardValues = newStateValues.gameBoardValues;
   state.currentPlayer = newStateValues.currentPlayer;
@@ -219,9 +229,16 @@ app.post('/placeCounter', (req, res) => {
 });
 
 app.post('/checkWin', (req, res) => {
-  const isWin = checkWinner(parseInt(req.body.column), parseInt(req.body.row));
+  const isWin = checkWinner(parseInt(req.body.column, 10), parseInt(req.body.row, 10));
   res.json({
     winDetected: isWin,
+  });
+});
+
+app.post('/resetBoard', (req, res) => {
+  updateStateValues(req.body);
+  res.json({
+    updatedState: state,
   });
 });
 

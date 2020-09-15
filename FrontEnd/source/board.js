@@ -12,21 +12,27 @@ function updateStateValues(newStateValues) {
   state.gameBoardRows = newStateValues.gameBoardRows;
 }
 
-function resetBoardArray(row, column, gameBoardArray) { // PURE FUNCTION
-  const customGameBoardValues = gameBoardArray.slice;
-  for (let i = 0; i < row; i += 1) {
-    for (let j = 0; j < column; j += 1) {
-      customGameBoardValues[i][j] = null;
-    }
-  }
-  return customGameBoardValues;
-}
-
 function resetBoard(row, column) {
   $('#game-board').html('');
-  state.gameBoardValues = resetBoardArray(row, column, state.gameBoardValues);
-  $('#player-counter').css('background-color', 'red');
-  state.currentPlayer = 'red';
+
+  const body = {
+    gameBoardValues: state.gameBoardValues,
+    currentPlayer: 'red',
+    gameBoardColumns: column,
+    gameBoardRows: row,
+  };
+  $.ajax({
+    type: 'POST',
+    url: '/resetBoard',
+    data: JSON.stringify(body),
+    contentType: 'application/json',
+    success: (result) => {
+      const resultObject = result.updatedState;
+      updateStateValues(resultObject);
+
+      $('#player-counter').css('background-color', state.currentPlayer);
+    },
+  });
 }
 
 function resetGame() {
@@ -51,7 +57,7 @@ function showWinner(winningColor) {
   $('.winner-text').text(`${winningColor.toUpperCase()} TEAM WINS!`);
   $('.winner-text').css('color', winningColor);
   const winCount = $(`#${winningColor}-win-count`).text();
-  $(`#${winningColor}-win-count`).text(parseInt(winCount) + 1);
+  $(`#${winningColor}-win-count`).text(parseInt(winCount, 10) + 1);
   disableBoard();
   removeHover();
 }
@@ -129,11 +135,12 @@ function displayInGameAssets() {
 
 // eslint-disable-next-line no-unused-vars
 function setupBoard() {
-  resetBoard();
+  resetBoard(state.gameBoardRows, state.gameBoardColumns);
   const row = $('#row-input').val();
   const column = $('#column-input').val();
   state.gameBoardColumns = column;
   state.gameBoardRows = row;
+  state.currentPlayer = 'red';
 
   // state.gameBoardValues = setupGameBoardValuesArray(row, column);
   drawBoardToHtml(state.gameBoardColumns, state.gameBoardRows);
