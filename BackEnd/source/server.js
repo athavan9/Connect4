@@ -22,9 +22,9 @@ function setupGameBoardValuesArray(row, column) { // PURE FUNCTION
 }
 
 function resetBoardArray(row, column, gameBoardArray) { // PURE FUNCTION
-  const customGameBoardValues = gameBoardArray.slice;
-  for (let i = 0; i < row; i += 1) {
-    for (let j = 0; j < column; j += 1) {
+  const customGameBoardValues = gameBoardArray.slice();
+  for (let i = 0; i < customGameBoardValues.length; i += 1) {
+    for (let j = 0; j < customGameBoardValues[0].length; j += 1) {
       customGameBoardValues[i][j] = null;
     }
   }
@@ -255,3 +255,20 @@ app.post('game/board/col', (req, res) => {
 app.listen(8080, () => {
   console.log('server has started');
 });
+
+if (typeof module !== 'undefined') {
+  module.exports = {
+    setupGameBoardValuesArray,
+    resetBoardArray,
+    updateStateValues,
+    changePlayer,
+    placeCounter,
+    checkColumnWin,
+    checkRowWin,
+    checkRightDiagonalWin,
+    getLeftDiagnoalPoint,
+    checkLeftDiagonalWin,
+    getRightDiagnoalPoint,
+    checkWinner,
+  };
+}
