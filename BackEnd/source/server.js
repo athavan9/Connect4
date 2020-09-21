@@ -23,16 +23,6 @@ function setupGameBoardValuesArray(row, column) { // PURE FUNCTION
   return customGameBoardValues;
 }
 
-function resetBoardArray(row, column, gameBoardArray) { // PURE FUNCTION
-  const customGameBoardValues = gameBoardArray.slice();
-  for (let i = 0; i < customGameBoardValues.length; i += 1) {
-    for (let j = 0; j < customGameBoardValues[0].length; j += 1) {
-      customGameBoardValues[i][j] = null;
-    }
-  }
-  return customGameBoardValues;
-}
-
 function updateStateValues(newStateValues) {
   state.gameBoardValues = newStateValues.gameBoardValues;
   state.currentPlayer = newStateValues.currentPlayer;
@@ -215,29 +205,22 @@ function checkWinner(columnIndex, rowIndex) {
 app.use(express.static('./FrontEnd/source'));
 app.use(express.json());
 
-app.post('/setup', (req, res) => {
-  updateStateValues(req.body);
-  state.gameBoardValues = setupGameBoardValuesArray(state.gameBoardRows, state.gameBoardColumns);
-  res.status(200);
-  res.json({
-    result: state,
-  });
-});
-
 app.post('/setupNewGame', (req, res) => {
-  updateStateValues(req.body);
+  state.gameBoardRows = req.body.rows;
+  state.gameBoardColumns = req.body.columns;
   state.gameBoardValues = setupGameBoardValuesArray(state.gameBoardRows, state.gameBoardColumns);
   state.currentPlayer = 'red';
   res.status(200);
   res.json({
-    result: state,
+    updatedState: state,
   });
 });
 
 app.post('/placeCounter', (req, res) => {
+  const counterPosLBL = placeCounter(req.body.column);
   res.json({
     updatedState: state,
-    placedCounterPos: placeCounter(req.body.column),
+    placedCounterPos: counterPosLBL,
   });
 });
 
@@ -246,23 +229,6 @@ app.post('/checkWin', (req, res) => {
   res.json({
     winDetected: isWin,
   });
-});
-
-app.post('/resetBoard', (req, res) => {
-  updateStateValues(req.body);
-  state.gameBoardValues = resetBoardArray(state.gameBoardArray, state.gameBoardColumns, state.gameBoardValues);
-  res.json({
-    updatedState: state,
-  });
-});
-
-// app.get('/setup', (req, res) => {
-//   console.log('Setting up board...');
-//   res.send('hi');
-// });
-
-app.post('game/board/col', (req, res) => {
-  res.json();
 });
 
 if (process.env.NODE_ENV !== 'test') {
@@ -274,7 +240,6 @@ if (process.env.NODE_ENV !== 'test') {
 if (typeof module !== 'undefined') {
   module.exports = {
     setupGameBoardValuesArray,
-    resetBoardArray,
     updateStateValues,
     changePlayer,
     placeCounter,
