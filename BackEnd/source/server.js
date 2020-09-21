@@ -2,6 +2,8 @@ const express = require('express');
 
 const app = express();
 
+module.exports = app;
+
 const state = {
   gameBoardValues: [],
   currentPlayer: 'red',
@@ -216,6 +218,17 @@ app.use(express.json());
 app.post('/setup', (req, res) => {
   updateStateValues(req.body);
   state.gameBoardValues = setupGameBoardValuesArray(state.gameBoardRows, state.gameBoardColumns);
+  res.status(200);
+  res.json({
+    result: state,
+  });
+});
+
+app.post('/setupNewGame', (req, res) => {
+  updateStateValues(req.body);
+  state.gameBoardValues = setupGameBoardValuesArray(state.gameBoardRows, state.gameBoardColumns);
+  state.currentPlayer = 'red';
+  res.status(200);
   res.json({
     result: state,
   });
@@ -252,9 +265,11 @@ app.post('game/board/col', (req, res) => {
   res.json();
 });
 
-app.listen(8080, () => {
-  console.log('server has started');
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(8080, () => {
+    console.log('server started on port 8080');
+  });
+}
 
 if (typeof module !== 'undefined') {
   module.exports = {
@@ -270,5 +285,7 @@ if (typeof module !== 'undefined') {
     checkLeftDiagonalWin,
     getRightDiagnoalPoint,
     checkWinner,
+    app,
   };
+  // module.exports = app;
 }

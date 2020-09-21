@@ -90,11 +90,9 @@ function placeCounter(columnIndex) {
     success: (result) => {
       const resultObject = result.updatedState;
       newlyPlacedPiece = result.placedCounterPos;
-
       $(`#${newlyPlacedPiece}`).css('background-color', state.currentPlayer);
 
       updateStateValues(resultObject);
-
       $('#player-counter').css('background-color', state.currentPlayer);
 
       checkWin(newlyPlacedPiece);
@@ -142,7 +140,7 @@ function setupBoard() {
 
   $.ajax({
     type: 'POST',
-    url: '/setup',
+    url: '/setupNewGame',
     data: JSON.stringify(state),
     contentType: 'application/json',
     success: (result) => {
@@ -159,12 +157,3 @@ $('#create-board-button').click(() => {
 $('#reset-button').click(() => {
   setupBoard();
 });
-// module = module || {};
-// if (typeof module !== 'undefined') {
-//   module.exports = {
-//     resetBoard,
-//     setupGameBoardValuesArray,
-//     placeCounter,
-//     setupBoard,
-//   };
-// }
