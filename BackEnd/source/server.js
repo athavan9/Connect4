@@ -97,12 +97,49 @@ function checkRowWin(rowIndex, gameBoardArray) { // PURE FUNCTION
   return null;
 }
 
-function checkRightDiagonalWin(colAndRowIndex, gameBoardArray) { // PURE FUNCTION
+function getLeftDiagnoalPoint(columnIndex, rowIndex, gameBoardArray) { // PURE FUNCTION
+  let columnPos = columnIndex;
+  let rowPos = rowIndex;
+  let lowestLeftDiagonal;
+
+  let foundEnd = false;
+  while (foundEnd === false) {
+    if (columnPos - 1 < 0 || rowPos + 1 > gameBoardArray[0].length - 1) {
+      lowestLeftDiagonal = [columnPos, rowPos];
+      foundEnd = true;
+    }
+    columnPos -= 1;
+    rowPos += 1;
+  }
+  return lowestLeftDiagonal;
+}
+
+function getRightDiagnoalPoint(columnIndex, rowIndex, gameBoardArray) { // PURE FUNCTION
+  let columnPos = columnIndex;
+  let rowPos = rowIndex;
+  let lowestRightDiagonal;
+
+  let foundEnd = false;
+  while (foundEnd === false) {
+    if (columnPos + 1 > gameBoardArray.length - 1 || rowPos + 1 > gameBoardArray[0].length - 1) {
+      lowestRightDiagonal = [columnPos, rowPos];
+      foundEnd = true;
+    }
+    columnPos += 1;
+    rowPos += 1;
+  }
+  return lowestRightDiagonal;
+}
+
+function checkRightDiagonalWin(colIndex, rowIndex, gameBoardArray) { // PURE FUNCTION
   let fourInARowCount = 0;
   const columnLength = gameBoardArray.length;
 
-  let columnPos = colAndRowIndex[0];
-  let rowPos = colAndRowIndex[1];
+  const lowestLeftDiagPoint = getLeftDiagnoalPoint(colIndex, rowIndex, gameBoardArray);
+
+  let columnPos = lowestLeftDiagPoint[0];
+  let rowPos = lowestLeftDiagPoint[1];
+
   while (columnPos <= columnLength - 4 && rowPos >= 3) {
     fourInARowCount = 0;
     for (let i = 1; i < 4; i += 1) {
@@ -125,28 +162,13 @@ function checkRightDiagonalWin(colAndRowIndex, gameBoardArray) { // PURE FUNCTIO
   return null;
 }
 
-function getLeftDiagnoalPoint(columnIndex, rowIndex, gameBoardArray) { // PURE FUNCTION
-  let columnPos = columnIndex;
-  let rowPos = rowIndex;
-  let lowestLeftDiagonal;
-
-  let foundEnd = false;
-  while (foundEnd === false) {
-    if (columnPos - 1 < 0 || rowPos + 1 > gameBoardArray[0].length - 1) {
-      lowestLeftDiagonal = [columnPos, rowPos];
-      foundEnd = true;
-    }
-    columnPos -= 1;
-    rowPos += 1;
-  }
-  return lowestLeftDiagonal;
-}
-
-function checkLeftDiagonalWin(colAndRowIndex, gameBoardArray) { // PURE FUNCTION
+function checkLeftDiagonalWin(colIndex, rowIndex, gameBoardArray) { // PURE FUNCTION
   let fourInARowCount = 0;
 
-  let columnPos = colAndRowIndex[0];
-  let rowPos = colAndRowIndex[1];
+  const lowestRightDiagPoint = getRightDiagnoalPoint(colIndex, rowIndex, gameBoardArray);
+
+  let columnPos = lowestRightDiagPoint[0];
+  let rowPos = lowestRightDiagPoint[1];
   while (columnPos >= 3 && rowPos >= 3) {
     fourInARowCount = 0;
     for (let i = 1; i < 4; i += 1) {
@@ -169,35 +191,15 @@ function checkLeftDiagonalWin(colAndRowIndex, gameBoardArray) { // PURE FUNCTION
   return null;
 }
 
-function getRightDiagnoalPoint(columnIndex, rowIndex, gameBoardArray) { // PURE FUNCTION
-  let columnPos = columnIndex;
-  let rowPos = rowIndex;
-  let lowestRightDiagonal;
-
-  let foundEnd = false;
-  while (foundEnd === false) {
-    if (columnPos + 1 > gameBoardArray.length - 1 || rowPos + 1 > gameBoardArray[0].length - 1) {
-      lowestRightDiagonal = [columnPos, rowPos];
-      foundEnd = true;
-    }
-    columnPos += 1;
-    rowPos += 1;
-  }
-  return lowestRightDiagonal;
-}
-
 function checkWinner(columnIndex, rowIndex) {
-  const lowestLeftDiagPoint = getLeftDiagnoalPoint(columnIndex, rowIndex, state.gameBoardValues);
-  const lowestRightDiagPoint = getRightDiagnoalPoint(columnIndex, rowIndex, state.gameBoardValues);
-
   if (checkColumnWin(columnIndex, state.gameBoardValues) != null) {
     return checkColumnWin(columnIndex, state.gameBoardValues);
   } if (checkRowWin(rowIndex, state.gameBoardValues) != null) {
     return checkRowWin(rowIndex, state.gameBoardValues);
-  } if (checkRightDiagonalWin(lowestLeftDiagPoint, state.gameBoardValues) != null) {
-    return checkRightDiagonalWin(lowestLeftDiagPoint, state.gameBoardValues);
-  } if (checkLeftDiagonalWin(lowestRightDiagPoint, state.gameBoardValues) != null) {
-    return checkLeftDiagonalWin(lowestRightDiagPoint, state.gameBoardValues);
+  } if (checkRightDiagonalWin(columnIndex, rowIndex, state.gameBoardValues) != null) {
+    return checkRightDiagonalWin(columnIndex, rowIndex, state.gameBoardValues);
+  } if (checkLeftDiagonalWin(columnIndex, rowIndex, state.gameBoardValues) != null) {
+    return checkLeftDiagonalWin(columnIndex, rowIndex, state.gameBoardValues);
   }
   return null;
 }
@@ -218,6 +220,7 @@ app.post('/setupNewGame', (req, res) => {
 
 app.post('/placeCounter', (req, res) => {
   const counterPosLBL = placeCounter(req.body.column);
+  res.status(200);
   res.json({
     updatedState: state,
     placedCounterPos: counterPosLBL,
