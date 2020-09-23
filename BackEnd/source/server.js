@@ -2,6 +2,8 @@ const express = require('express');
 
 const app = express();
 
+module.exports = app;
+
 const state = {
   gameBoardValues: [],
   currentPlayer: 'red',
@@ -17,16 +19,6 @@ function setupGameBoardValuesArray(row, column) { // PURE FUNCTION
       tempArray.push(null);
     }
     customGameBoardValues.push(tempArray);
-  }
-  return customGameBoardValues;
-}
-
-function resetBoardArray(row, column, gameBoardArray) { // PURE FUNCTION
-  const customGameBoardValues = gameBoardArray.slice;
-  for (let i = 0; i < row; i += 1) {
-    for (let j = 0; j < column; j += 1) {
-      customGameBoardValues[i][j] = null;
-    }
   }
   return customGameBoardValues;
 }
@@ -105,12 +97,49 @@ function checkRowWin(rowIndex, gameBoardArray) { // PURE FUNCTION
   return null;
 }
 
-function checkRightDiagonalWin(colAndRowIndex, gameBoardArray) { // PURE FUNCTION
+function getLeftDiagnoalPoint(columnIndex, rowIndex, gameBoardArray) { // PURE FUNCTION
+  let columnPos = columnIndex;
+  let rowPos = rowIndex;
+  let lowestLeftDiagonal;
+
+  let foundEnd = false;
+  while (foundEnd === false) {
+    if (columnPos - 1 < 0 || rowPos + 1 > gameBoardArray[0].length - 1) {
+      lowestLeftDiagonal = [columnPos, rowPos];
+      foundEnd = true;
+    }
+    columnPos -= 1;
+    rowPos += 1;
+  }
+  return lowestLeftDiagonal;
+}
+
+function getRightDiagnoalPoint(columnIndex, rowIndex, gameBoardArray) { // PURE FUNCTION
+  let columnPos = columnIndex;
+  let rowPos = rowIndex;
+  let lowestRightDiagonal;
+
+  let foundEnd = false;
+  while (foundEnd === false) {
+    if (columnPos + 1 > gameBoardArray.length - 1 || rowPos + 1 > gameBoardArray[0].length - 1) {
+      lowestRightDiagonal = [columnPos, rowPos];
+      foundEnd = true;
+    }
+    columnPos += 1;
+    rowPos += 1;
+  }
+  return lowestRightDiagonal;
+}
+
+function checkRightDiagonalWin(colIndex, rowIndex, gameBoardArray) { // PURE FUNCTION
   let fourInARowCount = 0;
   const columnLength = gameBoardArray.length;
 
-  let columnPos = colAndRowIndex[0];
-  let rowPos = colAndRowIndex[1];
+  const lowestLeftDiagPoint = getLeftDiagnoalPoint(colIndex, rowIndex, gameBoardArray);
+
+  let columnPos = lowestLeftDiagPoint[0];
+  let rowPos = lowestLeftDiagPoint[1];
+
   while (columnPos <= columnLength - 4 && rowPos >= 3) {
     fourInARowCount = 0;
     for (let i = 1; i < 4; i += 1) {
@@ -133,28 +162,13 @@ function checkRightDiagonalWin(colAndRowIndex, gameBoardArray) { // PURE FUNCTIO
   return null;
 }
 
-function getLeftDiagnoalPoint(columnIndex, rowIndex, gameBoardArray) { // PURE FUNCTION
-  let columnPos = columnIndex;
-  let rowPos = rowIndex;
-  let lowestLeftDiagonal;
-
-  let foundEnd = false;
-  while (foundEnd === false) {
-    if (columnPos - 1 < 0 || rowPos + 1 > gameBoardArray[0].length - 1) {
-      lowestLeftDiagonal = [columnPos, rowPos];
-      foundEnd = true;
-    }
-    columnPos -= 1;
-    rowPos += 1;
-  }
-  return lowestLeftDiagonal;
-}
-
-function checkLeftDiagonalWin(colAndRowIndex, gameBoardArray) { // PURE FUNCTION
+function checkLeftDiagonalWin(colIndex, rowIndex, gameBoardArray) { // PURE FUNCTION
   let fourInARowCount = 0;
 
-  let columnPos = colAndRowIndex[0];
-  let rowPos = colAndRowIndex[1];
+  const lowestRightDiagPoint = getRightDiagnoalPoint(colIndex, rowIndex, gameBoardArray);
+
+  let columnPos = lowestRightDiagPoint[0];
+  let rowPos = lowestRightDiagPoint[1];
   while (columnPos >= 3 && rowPos >= 3) {
     fourInARowCount = 0;
     for (let i = 1; i < 4; i += 1) {
@@ -177,35 +191,15 @@ function checkLeftDiagonalWin(colAndRowIndex, gameBoardArray) { // PURE FUNCTION
   return null;
 }
 
-function getRightDiagnoalPoint(columnIndex, rowIndex, gameBoardArray) { // PURE FUNCTION
-  let columnPos = columnIndex;
-  let rowPos = rowIndex;
-  let lowestRightDiagonal;
-
-  let foundEnd = false;
-  while (foundEnd === false) {
-    if (columnPos + 1 > gameBoardArray.length - 1 || rowPos + 1 > gameBoardArray[0].length - 1) {
-      lowestRightDiagonal = [columnPos, rowPos];
-      foundEnd = true;
-    }
-    columnPos += 1;
-    rowPos += 1;
-  }
-  return lowestRightDiagonal;
-}
-
 function checkWinner(columnIndex, rowIndex) {
-  const lowestLeftDiagPoint = getLeftDiagnoalPoint(columnIndex, rowIndex, state.gameBoardValues);
-  const lowestRightDiagPoint = getRightDiagnoalPoint(columnIndex, rowIndex, state.gameBoardValues);
-
   if (checkColumnWin(columnIndex, state.gameBoardValues) != null) {
     return checkColumnWin(columnIndex, state.gameBoardValues);
   } if (checkRowWin(rowIndex, state.gameBoardValues) != null) {
     return checkRowWin(rowIndex, state.gameBoardValues);
-  } if (checkRightDiagonalWin(lowestLeftDiagPoint, state.gameBoardValues) != null) {
-    return checkRightDiagonalWin(lowestLeftDiagPoint, state.gameBoardValues);
-  } if (checkLeftDiagonalWin(lowestRightDiagPoint, state.gameBoardValues) != null) {
-    return checkLeftDiagonalWin(lowestRightDiagPoint, state.gameBoardValues);
+  } if (checkRightDiagonalWin(columnIndex, rowIndex, state.gameBoardValues) != null) {
+    return checkRightDiagonalWin(columnIndex, rowIndex, state.gameBoardValues);
+  } if (checkLeftDiagonalWin(columnIndex, rowIndex, state.gameBoardValues) != null) {
+    return checkLeftDiagonalWin(columnIndex, rowIndex, state.gameBoardValues);
   }
   return null;
 }
@@ -213,18 +207,23 @@ function checkWinner(columnIndex, rowIndex) {
 app.use(express.static('./FrontEnd/source'));
 app.use(express.json());
 
-app.post('/setup', (req, res) => {
-  updateStateValues(req.body);
+app.post('/setupNewGame', (req, res) => {
+  state.gameBoardRows = req.body.rows;
+  state.gameBoardColumns = req.body.columns;
   state.gameBoardValues = setupGameBoardValuesArray(state.gameBoardRows, state.gameBoardColumns);
+  state.currentPlayer = 'red';
+  res.status(200);
   res.json({
-    result: state,
+    updatedState: state,
   });
 });
 
 app.post('/placeCounter', (req, res) => {
+  const counterPosLBL = placeCounter(req.body.column);
+  res.status(200);
   res.json({
     updatedState: state,
-    placedCounterPos: placeCounter(req.body.column),
+    placedCounterPos: counterPosLBL,
   });
 });
 
@@ -235,23 +234,26 @@ app.post('/checkWin', (req, res) => {
   });
 });
 
-app.post('/resetBoard', (req, res) => {
-  updateStateValues(req.body);
-  state.gameBoardValues = resetBoardArray(state.gameBoardArray, state.gameBoardColumns, state.gameBoardValues);
-  res.json({
-    updatedState: state,
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(8080, () => {
+    console.log('server started on port 8080');
   });
-});
+}
 
-// app.get('/setup', (req, res) => {
-//   console.log('Setting up board...');
-//   res.send('hi');
-// });
-
-app.post('game/board/col', (req, res) => {
-  res.json();
-});
-
-app.listen(8080, () => {
-  console.log('server has started');
-});
+if (typeof module !== 'undefined') {
+  module.exports = {
+    setupGameBoardValuesArray,
+    updateStateValues,
+    changePlayer,
+    placeCounter,
+    checkColumnWin,
+    checkRowWin,
+    checkRightDiagonalWin,
+    getLeftDiagnoalPoint,
+    checkLeftDiagonalWin,
+    getRightDiagnoalPoint,
+    checkWinner,
+    app,
+  };
+  // module.exports = app;
+}

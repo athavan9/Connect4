@@ -12,29 +12,6 @@ function updateStateValues(newStateValues) {
   state.gameBoardRows = newStateValues.gameBoardRows;
 }
 
-function resetBoard(row, column) {
-  $('#game-board').html('');
-
-  const body = {
-    gameBoardValues: state.gameBoardValues,
-    currentPlayer: 'red',
-    gameBoardColumns: column,
-    gameBoardRows: row,
-  };
-  $.ajax({
-    type: 'POST',
-    url: '/resetBoard',
-    data: JSON.stringify(body),
-    contentType: 'application/json',
-    success: (result) => {
-      const resultObject = result.updatedState;
-      updateStateValues(resultObject);
-
-      $('#player-counter').css('background-color', state.currentPlayer);
-    },
-  });
-}
-
 function removeHover() {
   for (let i = 0; i < state.gameBoardColumns; i += 1) {
     $(`#${i}`).removeClass('column-hover');
@@ -78,7 +55,6 @@ function checkWin(columnRowIndex) {
 }
 
 function placeCounter(columnIndex) {
-  let newlyPlacedPiece;
   const body = {
     column: columnIndex,
   };
@@ -88,16 +64,12 @@ function placeCounter(columnIndex) {
     data: JSON.stringify(body),
     contentType: 'application/json',
     success: (result) => {
-      const resultObject = result.updatedState;
-      newlyPlacedPiece = result.placedCounterPos;
+      $(`#${result.placedCounterPos}`).css('background-color', state.currentPlayer);
 
-      $(`#${newlyPlacedPiece}`).css('background-color', state.currentPlayer);
-
-      updateStateValues(resultObject);
-
+      updateStateValues(result.updatedState);
       $('#player-counter').css('background-color', state.currentPlayer);
 
-      checkWin(newlyPlacedPiece);
+      checkWin(result.placedCounterPos);
     },
   });
 }
@@ -127,27 +99,26 @@ function displayInGameAssets() {
   $('#player-turn-area').attr('style', 'display: block');
   $('#reset-button').attr('style', 'display: block');
   $('.fireworks').attr('style', 'display: none;');
+  $('#player-counter').css('background-color', state.currentPlayer);
 }
 
 function setupBoard() {
-  resetBoard(state.gameBoardRows, state.gameBoardColumns);
-  const row = $('#row-input').val();
-  const column = $('#column-input').val();
-  state.gameBoardColumns = column;
-  state.gameBoardRows = row;
-  state.currentPlayer = 'red';
-
-  drawBoardToHtml(state.gameBoardColumns, state.gameBoardRows);
-  displayInGameAssets();
+  $('#game-board').html('');
+  // resetBoard(state.gameBoardRows, state.gameBoardColumns);
+  const rowInput = $('#row-input').val();
+  const columnInput = $('#column-input').val();
 
   $.ajax({
     type: 'POST',
-    url: '/setup',
-    data: JSON.stringify(state),
+    url: '/setupNewGame',
+    data: JSON.stringify({ rows: rowInput, columns: columnInput }),
     contentType: 'application/json',
     success: (result) => {
-      const resultObject = result.result;
+      const resultObject = result.updatedState;
       updateStateValues(resultObject);
+
+      drawBoardToHtml(state.gameBoardColumns, state.gameBoardRows);
+      displayInGameAssets();
     },
   });
 }
@@ -159,12 +130,3 @@ $('#create-board-button').click(() => {
 $('#reset-button').click(() => {
   setupBoard();
 });
-// module = module || {};
-// if (typeof module !== 'undefined') {
-//   module.exports = {
-//     resetBoard,
-//     setupGameBoardValuesArray,
-//     placeCounter,
-//     setupBoard,
-//   };
-// }
