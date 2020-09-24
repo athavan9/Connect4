@@ -68,6 +68,7 @@ describe('Update State Values', () => {
     gameInPlay: false,
     yellowWinCount: 0,
     redWinCount: 0,
+    aiMode: false,
   };
   updateStateValues(expectedState);
 

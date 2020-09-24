@@ -12,6 +12,7 @@ const state = {
   gameInPlay: false,
   yellowWinCount: 0,
   redWinCount: 0,
+  aiMode: false,
 };
 
 function setupGameBoardValuesArray(row, column) { // PURE FUNCTION
@@ -227,6 +228,16 @@ app.post('/setupNewGame', (req, res) => {
 
 app.post('/placeCounter', (req, res) => {
   const counterPosLBL = placeCounter(req.body.column);
+  res.status(200);
+  res.json({
+    updatedState: state,
+    placedCounterPos: counterPosLBL,
+  });
+});
+
+app.get('/aiPlaceCounter', (req, res) => {
+  const randomColumn = Math.floor((Math.random() * state.gameBoardColumns - 1) + 1);
+  const counterPosLBL = placeCounter(randomColumn);
   res.status(200);
   res.json({
     updatedState: state,

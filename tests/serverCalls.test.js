@@ -10,6 +10,7 @@ describe('POST /setupNewGame', () => {
     gameInPlay: true,
     yellowWinCount: 0,
     redWinCount: 0,
+    aiMode: false,
   };
 
   const expectedTwoByTwoState = {
@@ -23,6 +24,7 @@ describe('POST /setupNewGame', () => {
     gameInPlay: true,
     yellowWinCount: 0,
     redWinCount: 0,
+    aiMode: false,
   };
 
   const cases = [
@@ -52,6 +54,7 @@ it.skip('should return the value of the current state of the server /checkGameIn
     gameInPlay: true,
     yellowWinCount: 0,
     redWinCount: 0,
+    aiMode: false,
   };
 
   request(serverExport.app)
@@ -74,6 +77,7 @@ describe.skip('POST /placeCounter', () => {
       gameInPlay: true,
       yellowWinCount: 0,
       redWinCount: 0,
+      aiMode: false,
     };
 
     request(serverExport.app)

@@ -6,6 +6,7 @@ const state = {
   gameInPlay: false,
   yellowWinCount: 0,
   redWinCount: 0,
+  aiMode: false,
 };
 
 window.onload = function exampleFunction() {
@@ -120,6 +121,22 @@ function placeCounter(columnIndex) {
   });
 }
 
+function aiPlaceCounter() {
+  $.ajax({
+    type: 'GET',
+    url: '/aiPlaceCounter',
+    contentType: 'application/json',
+    success: (result) => {
+      $(`#${result.placedCounterPos}`).css('background-color', state.currentPlayer);
+
+      updateStateValues(result.updatedState);
+      $('#player-counter').css('background-color', state.currentPlayer);
+
+      checkWin(result.placedCounterPos);
+    },
+  });
+}
+
 function drawBoardToHtml(columnSize, rowSize) {
   for (let i = 0; i < columnSize; i += 1) {
     const divColumn = $('<div></div>');
@@ -176,4 +193,8 @@ $('#create-board-button').click(() => {
 
 $('#reset-button').click(() => {
   setupBoard();
+});
+
+$('#AI-button').click(() => {
+  aiPlaceCounter();
 });
