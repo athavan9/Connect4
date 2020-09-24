@@ -9,6 +9,9 @@ const state = {
   currentPlayer: 'red',
   gameBoardColumns: 0,
   gameBoardRows: 0,
+  gameInPlay: false,
+  yellowWinCount: 0,
+  redWinCount: 0,
 };
 
 function setupGameBoardValuesArray(row, column) { // PURE FUNCTION
@@ -28,6 +31,9 @@ function updateStateValues(newStateValues) {
   state.currentPlayer = newStateValues.currentPlayer;
   state.gameBoardColumns = newStateValues.gameBoardColumns;
   state.gameBoardRows = newStateValues.gameBoardRows;
+  state.gameInPlay = newStateValues.gameInPlay;
+  state.yellowWinCount = newStateValues.yellowWinCount;
+  state.redWinCount = newStateValues.redWinCount;
 }
 
 function changePlayer(currentPlayerColour) { // PURE FUNCTION
@@ -212,6 +218,7 @@ app.post('/setupNewGame', (req, res) => {
   state.gameBoardColumns = req.body.columns;
   state.gameBoardValues = setupGameBoardValuesArray(state.gameBoardRows, state.gameBoardColumns);
   state.currentPlayer = 'red';
+  state.gameInPlay = true;
   res.status(200);
   res.json({
     updatedState: state,
@@ -228,15 +235,27 @@ app.post('/placeCounter', (req, res) => {
 });
 
 app.post('/checkWin', (req, res) => {
-  const isWin = checkWinner(parseInt(req.body.column, 10), parseInt(req.body.row, 10));
+  const winColour = checkWinner(parseInt(req.body.column, 10), parseInt(req.body.row, 10));
+  if (winColour === 'yellow') {
+    state.yellowWinCount += 1;
+  } else if (winColour === 'red') {
+    state.redWinCount += 1;
+  }
   res.json({
-    winDetected: isWin,
+    winDetected: winColour,
+    updatedState: state,
+  });
+});
+
+app.get('/checkGameInPlay', (req, res) => {
+  res.json({
+    latestState: state,
   });
 });
 
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(8080, () => {
-    console.log('server started on port 8080');
+  app.listen(3002, () => {
+    console.log('server started on port 3002');
   });
 }
 
