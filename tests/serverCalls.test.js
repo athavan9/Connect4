@@ -7,6 +7,9 @@ describe('POST /setupNewGame', () => {
     currentPlayer: 'red',
     gameBoardColumns: 0,
     gameBoardRows: 0,
+    gameInPlay: true,
+    yellowWinCount: 0,
+    redWinCount: 0,
   };
 
   const expectedTwoByTwoState = {
@@ -17,6 +20,9 @@ describe('POST /setupNewGame', () => {
     currentPlayer: 'red',
     gameBoardColumns: 2,
     gameBoardRows: 2,
+    gameInPlay: true,
+    yellowWinCount: 0,
+    redWinCount: 0,
   };
 
   const cases = [
@@ -37,6 +43,23 @@ describe('POST /setupNewGame', () => {
   );
 });
 
+it.skip('should return the value of the current state of the server /checkGameInPlay', (done) => {
+  const expectedState = {
+    gameBoardValues: [],
+    currentPlayer: 'red',
+    gameBoardColumns: 0,
+    gameBoardRows: 0,
+    gameInPlay: true,
+    yellowWinCount: 0,
+    redWinCount: 0,
+  };
+
+  request(serverExport.app)
+    .post('/checkGameInPlay')
+    .expect({ latestState: expectedState })
+    .end(done);
+});
+
 describe.skip('POST /placeCounter', () => {
   it('should return a state with a correctly placed counter', (done) => {
     const columnIndexSent = 0;
@@ -48,6 +71,9 @@ describe.skip('POST /placeCounter', () => {
       currentPlayer: 'red',
       gameBoardColumns: 2,
       gameBoardRows: 2,
+      gameInPlay: true,
+      yellowWinCount: 0,
+      redWinCount: 0,
     };
 
     request(serverExport.app)

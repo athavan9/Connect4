@@ -197,15 +197,15 @@ function checkLeftDiagonalWin(colIndex, rowIndex, gameBoardArray) { // PURE FUNC
   return null;
 }
 
-function checkWinner(columnIndex, rowIndex) {
-  if (checkColumnWin(columnIndex, state.gameBoardValues) != null) {
-    return checkColumnWin(columnIndex, state.gameBoardValues);
-  } if (checkRowWin(rowIndex, state.gameBoardValues) != null) {
-    return checkRowWin(rowIndex, state.gameBoardValues);
-  } if (checkRightDiagonalWin(columnIndex, rowIndex, state.gameBoardValues) != null) {
-    return checkRightDiagonalWin(columnIndex, rowIndex, state.gameBoardValues);
-  } if (checkLeftDiagonalWin(columnIndex, rowIndex, state.gameBoardValues) != null) {
-    return checkLeftDiagonalWin(columnIndex, rowIndex, state.gameBoardValues);
+function checkWinner(columnIndex, rowIndex, gameBoardArray) {
+  if (checkColumnWin(columnIndex, gameBoardArray) != null) {
+    return checkColumnWin(columnIndex, gameBoardArray);
+  } if (checkRowWin(rowIndex, gameBoardArray) != null) {
+    return checkRowWin(rowIndex, gameBoardArray);
+  } if (checkRightDiagonalWin(columnIndex, rowIndex, gameBoardArray) != null) {
+    return checkRightDiagonalWin(columnIndex, rowIndex, gameBoardArray);
+  } if (checkLeftDiagonalWin(columnIndex, rowIndex, gameBoardArray) != null) {
+    return checkLeftDiagonalWin(columnIndex, rowIndex, gameBoardArray);
   }
   return null;
 }
@@ -235,12 +235,14 @@ app.post('/placeCounter', (req, res) => {
 });
 
 app.post('/checkWin', (req, res) => {
-  const winColour = checkWinner(parseInt(req.body.column, 10), parseInt(req.body.row, 10));
+  const winColour = checkWinner(parseInt(req.body.column, 10),
+    parseInt(req.body.row, 10), state.gameBoardValues);
   if (winColour === 'yellow') {
     state.yellowWinCount += 1;
   } else if (winColour === 'red') {
     state.redWinCount += 1;
   }
+  res.status(200);
   res.json({
     winDetected: winColour,
     updatedState: state,
@@ -248,6 +250,7 @@ app.post('/checkWin', (req, res) => {
 });
 
 app.get('/checkGameInPlay', (req, res) => {
+  res.status(200);
   res.json({
     latestState: state,
   });
@@ -272,7 +275,7 @@ if (typeof module !== 'undefined') {
     checkLeftDiagonalWin,
     getRightDiagnoalPoint,
     checkWinner,
+    state,
     app,
   };
-  // module.exports = app;
 }

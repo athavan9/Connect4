@@ -9,7 +9,9 @@ const {
   getLeftDiagnoalPoint,
   checkLeftDiagonalWin,
   getRightDiagnoalPoint,
-  checkWinner} = require('../BackEnd/source/server.js');
+  checkWinner,
+  state,
+} = require('../BackEnd/source/server.js');
 
 describe('Setup Initial GameBoard Array', () => {
   const TwoByTwoExpectedBoard = [
@@ -47,14 +49,29 @@ describe('Setup Initial GameBoard Array', () => {
     [7, 5, SevenByFiveExpectedBoard],
     [5, 6, FiveBySixExpectedBoard]];
 
-  test.each(cases)(
-    'When given %s rows and %s columns, it returns an empty initial game board array of that size',
+  it.each(cases)(
+    'Returns an empty initial game board array, when given %s rows and %s columns',
     (numRows, numColumns, expectedResult) => {
       // Act
       const actualBoard = setupGameBoardValuesArray(numRows, numColumns);
       expect(actualBoard).toStrictEqual(expectedResult);
     },
   );
+});
+
+describe('Update State Values', () => {
+  const expectedState = {
+    gameBoardValues: [],
+    currentPlayer: 'red',
+    gameBoardColumns: 1,
+    gameBoardRows: 1,
+    gameInPlay: false,
+    yellowWinCount: 0,
+    redWinCount: 0,
+  };
+  updateStateValues(expectedState);
+
+  expect(state).toStrictEqual(expectedState);
 });
 
 describe('Changes Current Player', () => {
@@ -407,8 +424,116 @@ describe('Checks for Lowest Right Diagonal Point', () => {
   );
 });
 
-describe('Check for a Winner', () => {
-  test('', () => {
+describe('Checks position of when counter is placed', () => {
+  it('should place a counter on the first row', () => {
+    state.gameBoardValues = setupGameBoardValuesArray(4, 4);
+    const expectedPlacedCounterPos = '0-3';
 
+    const actualPlacedCounterPos = placeCounter(0);
+    expect(actualPlacedCounterPos).toBe(expectedPlacedCounterPos);
+  });
+
+  it('should place a counter on the second row', () => {
+    state.gameBoardValues = setupGameBoardValuesArray(4, 4);
+    state.gameBoardValues[0][3] = 'red';
+    const expectedPlacedCounterPos = '0-2';
+
+    const actualPlacedCounterPos = placeCounter(0);
+    expect(actualPlacedCounterPos).toBe(expectedPlacedCounterPos);
+  });
+
+  it('should return null when a counter cannot be placed on a full columm', () => {
+    state.gameBoardValues = setupGameBoardValuesArray(4, 4);
+    state.gameBoardValues[0][3] = 'red';
+    state.gameBoardValues[0][2] = 'red';
+    state.gameBoardValues[0][1] = 'red';
+    state.gameBoardValues[0][0] = 'yellow';
+
+    const expectedPlacedCounterPos = null;
+
+    const actualPlacedCounterPos = placeCounter(0);
+    expect(actualPlacedCounterPos).toBe(expectedPlacedCounterPos);
+  });
+});
+
+describe('Checks for a Winner', () => {
+  it('return a red winner when a left digonal red win is detected', () => {
+    const fiveBySixBoard = [
+      [null, null, null, null, null],
+      ['red', null, null, null, null],
+      [null, 'red', null, null, null],
+      [null, null, 'red', null, null],
+      [null, null, null, 'red', null],
+      [null, null, null, null, 'yellow'],
+    ];
+    const expectedWinner = 'red';
+
+    const actualWinner = checkWinner(1, 0, fiveBySixBoard);
+
+    expect(actualWinner).toBe(expectedWinner);
+  });
+
+  it('return a yellow winner when a column win is detected', () => {
+    const fiveBySixBoard = [
+      [null, null, null, null, null],
+      [null, null, null, null, null],
+      [null, null, null, null, null],
+      [null, null, null, null, null],
+      [null, null, null, null, null],
+      [null, 'yellow', 'yellow', 'yellow', 'yellow'],
+    ];
+    const expectedWinner = 'yellow';
+
+    const actualWinner = checkWinner(5, 1, fiveBySixBoard);
+
+    expect(actualWinner).toBe(expectedWinner);
+  });
+
+  it('return a yellow winner when a row win is detected', () => {
+    const fiveBySixBoard = [
+      [null, null, null, null, null],
+      [null, null, null, null, null],
+      [null, null, null, null, 'yellow'],
+      [null, null, null, null, 'yellow'],
+      [null, null, null, null, 'yellow'],
+      [null, null, null, null, 'yellow'],
+    ];
+    const expectedWinner = 'yellow';
+
+    const actualWinner = checkWinner(2, 4, fiveBySixBoard);
+
+    expect(actualWinner).toBe(expectedWinner);
+  });
+
+  it('return a red winner when a right digonal red win is detected', () => {
+    const fiveBySixBoard = [
+      [null, null, null, null, null],
+      [null, null, null, null, 'red'],
+      [null, null, null, 'red', null],
+      [null, null, 'red', null, null],
+      [null, 'red', null, null, null],
+      [null, null, null, null, null],
+    ];
+    const expectedWinner = 'red';
+
+    const actualWinner = checkWinner(4, 1, fiveBySixBoard);
+
+    expect(actualWinner).toBe(expectedWinner);
+  });
+
+  it('return a null value when there is no win detected', () => {
+    const fiveBySixBoard = [
+      [null, null, null, null, null],
+      [null, null, null, null, null],
+      [null, null, null, null, null],
+      [null, null, null, null, null],
+      [null, null, null, null, null],
+      [null, null, null, null, null],
+    ];
+    const expectedWinner = null;
+
+    const actualWinner = checkWinner(2, 2, fiveBySixBoard);
+
+    expect(actualWinner).toBe(expectedWinner);
   });
 });
