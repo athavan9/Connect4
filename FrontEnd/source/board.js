@@ -10,7 +10,8 @@ const state = {
 };
 
 window.onload = function exampleFunction() {
-  checkGameInPlay();
+  $('#bot-button').hide();
+  getLatestStateFromServer();
 };
 
 function updateStateValues(newStateValues) {
@@ -61,15 +62,13 @@ function showBoard() {
   updateBoard();
 }
 
-function checkGameInPlay() {
+function getLatestStateFromServer() {
   $.ajax({
     type: 'GET',
-    url: '/checkGameInPlay',
+    url: '/getLatestState',
     contentType: 'application/json',
     success: (result) => {
-      console.log(result);
       if (result.latestState.gameInPlay === true) {
-        console.log(result.latestState);
         updateStateValues(result.latestState);
         showBoard();
         displayInGameAssets();
@@ -91,9 +90,7 @@ function checkWin(columnRowIndex) {
     data: JSON.stringify(body),
     contentType: 'application/json',
     success: (result) => {
-      // console.log('redWinCountResult' + result.updatedState.redWinCount);
       updateStateValues(result.updatedState);
-      // console.log('redWinCountState' + state.redWinCount);
       if (result.winDetected != null) {
         showWinner(result.winDetected);
       }
@@ -121,10 +118,10 @@ function placeCounter(columnIndex) {
   });
 }
 
-function aiPlaceCounter() {
+function botPlaceCounter() {
   $.ajax({
     type: 'GET',
-    url: '/aiPlaceCounter',
+    url: '/botPlaceCounter',
     contentType: 'application/json',
     success: (result) => {
       $(`#${result.placedCounterPos}`).css('background-color', state.currentPlayer);
@@ -158,6 +155,7 @@ function drawBoardToHtml(columnSize, rowSize) {
 }
 
 function displayInGameAssets() {
+  $('#bot-button').show();
   $('#win-count-area').attr('style', 'display: block');
   $('#red-win-count').text(state.redWinCount);
   $('#yellow-win-count').text(state.yellowWinCount);
@@ -195,6 +193,6 @@ $('#reset-button').click(() => {
   setupBoard();
 });
 
-$('#AI-button').click(() => {
-  aiPlaceCounter();
+$('#bot-button').click(() => {
+  botPlaceCounter();
 });

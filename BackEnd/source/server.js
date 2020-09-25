@@ -235,8 +235,8 @@ app.post('/placeCounter', (req, res) => {
   });
 });
 
-app.get('/aiPlaceCounter', (req, res) => {
-  const randomColumn = Math.floor((Math.random() * state.gameBoardColumns - 1) + 1);
+app.get('/botPlaceCounter', (req, res) => {
+  const randomColumn = Math.floor((Math.random() * state.gameBoardColumns));
   const counterPosLBL = placeCounter(randomColumn);
   res.status(200);
   res.json({
@@ -260,7 +260,7 @@ app.post('/checkWin', (req, res) => {
   });
 });
 
-app.get('/checkGameInPlay', (req, res) => {
+app.get('/getLatestState', (req, res) => {
   res.status(200);
   res.json({
     latestState: state,

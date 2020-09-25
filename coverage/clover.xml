@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1600963915266" clover="3.2.0">
-  <project timestamp="1600963915266" name="All files">
+<coverage generated="1600980173517" clover="3.2.0">
+  <project timestamp="1600980173518" name="All files">
     <metrics statements="155" coveredstatements="137" conditionals="66" coveredconditionals="58" methods="17" coveredmethods="12" elements="238" coveredelements="207" complexity="0" loc="155" ncloc="155" packages="1" files="1" classes="1"/>
     <file name="server.js" path="/Users/athavan/GitHub/Connect4/BackEnd/source/server.js">
       <metrics statements="155" coveredstatements="137" conditionals="66" coveredconditionals="58" methods="17" coveredmethods="12"/>
